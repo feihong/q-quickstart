@@ -21,3 +21,13 @@
     3 4#til 10 --> 0 1 2 3
                    4 5 6 7
                    8 9 0 1
+
+## type
+
+    type 42 --> -7h
+    type 3f --> -9h
+    type 3 4 5 --> 7h
+    type 3.1 4.2 5.3 --> 9h
+    type "foo" --> 10h
+    type `apl --> -11h
+    type () --> 0h
