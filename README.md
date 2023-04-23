@@ -21,6 +21,10 @@ You will need to override your security settings when running `spctl` through th
 
 ## Commands
 
+Execute a program from a file
+
+    q hello.q
+
 ## Notes
 
 Running `pip install pyq` fails with a build error in Python 3.11.
