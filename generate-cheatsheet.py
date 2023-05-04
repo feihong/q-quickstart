@@ -32,8 +32,12 @@ def run_examples(lines):
   q = QIntepreter()
 
   for line in lines:
+    if line.startswith('//'):
+      yield f'\n## {line[2:]}\n'
+      continue
+
     if line.startswith('/'):
-      yield f'\n## {line[1:]}\n\n'
+      yield f'\n### {line[1:]}\n\n'
       continue
 
     result = q.eval(line)
