@@ -43,6 +43,8 @@ def run_examples(lines):
     result = q.eval(line)
     if result:
       yield f'    {line} --> {result}\n'
+    else:
+      yield f'    {line}\n'
 
 with output_file.open('w') as fp:
   fp.write('# Cheatsheet\n')

@@ -33,3 +33,4 @@ Running `pip install pyq` fails with a build error in Python 3.11.
 
 - [Installation instructions](https://code.kx.com/q/learn/install/)
 - [Reference card](https://code.kx.com/q/ref/)
+- [Q by examples](https://code.kx.com/q/learn/q-by-examples/)

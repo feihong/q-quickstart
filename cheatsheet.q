@@ -15,9 +15,18 @@ all 1 1 0 1
 
 0101b and 0011b
 
+/deltas
+
+deltas 1 3 7 12 19
+
 /or
 
 0101b or 0011b
+
+/rand
+
+\S 73
+rand each 30#5
 
 /til
 
@@ -58,6 +67,27 @@ type ()
 
 //Iterators
 
+/Each
+
+(count')(1 2 3;4 5 6 7)
+
+/Each Left
+
+"abc",\:"xy"
+
+/Each Right
+
+"abc",/:"xy"
+(1+til 10)*/:1+til 10
+
+/Each Prior
+
+(,':)1 2 3 4
+
+/Converge
+
+{0|x-1}\[10]
+
 /Do
 
 10{x+3}/1 2 3
@@ -71,3 +101,12 @@ type ()
 
 0-\1 2 3 4 5
 (-\)1 2 3 4 5
+
+//Dictionaries
+
+"abc"!10 20 30
+show dc:`c1`c2!(1 2 3; "abc")
+dc[`c2; 1]
+dc[`c1;]
+dc[;2]
+([] c1:10 20 30; c2:"abc")
