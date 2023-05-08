@@ -15,6 +15,12 @@ all 1 1 0 1
 
 0101b and 0011b
 
+/cut, drop
+
+2 4 4 9 _ til 10
+3_til 10
+-3_til 10
+
 /deltas
 
 deltas 1 3 7 12 19
@@ -70,6 +76,7 @@ type ()
 /Each
 
 (count')(1 2 3;4 5 6 7)
+666,'(1 2 3;4 5 6 7)
 
 /Each Left
 
@@ -84,6 +91,10 @@ type ()
 
 (,':)1 2 3 4
 
+/Case
+
+0 1 0 1'["abcd";"wxyz"]
+
 /Converge
 
 {0|x-1}\[10]
@@ -91,6 +102,10 @@ type ()
 /Do
 
 10{x+3}/1 2 3
+
+/While
+
+(0<){x div 3}\99
 
 /Over
 
