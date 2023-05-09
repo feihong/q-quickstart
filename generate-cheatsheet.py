@@ -1,52 +1,58 @@
+import re
+import subprocess
 from pathlib import Path
-import pexpect
+from dataclasses import dataclass
+from typing import List
 
+q_exe = 'q/m64/q'
 input_file = Path('cheatsheet.q')
+build_dir = Path('_build')
+generated_file = build_dir / input_file.name
 output_file = input_file.with_suffix('.md')
 
-class QIntepreter:
-  def __init__(self):
-    qhome = Path('./q').absolute()
-    self.q = pexpect.spawn(f'q/m64/q', env={'QHOME': qhome})
-    self.q.expect('q\)')
-  
-  def eval(self, s):
-    self.q.sendline(s)
-    self.q.expect('q\)')
-    _expr, *result = self.q.before.decode('utf8').splitlines()
-    if len(result) > 1:
-      prefix = ' ' * (len(s) + 9)
-      first, *rest = result
-      result = [first] + [prefix + line for line in rest]
+@dataclass
+class Header:
+  level: int
+  content: str
 
-    return '\n'.join(result)
+@dataclass
+class Code:
+  lines: List[str]
 
-def get_lines():
-  with input_file.open() as fp:
-    for line in fp:
-      line = line.strip()
-      if line:
-        yield line
-
-def run_examples(lines):
-  q = QIntepreter()
-
-  for line in lines:
-    if line.startswith('//'):
-      yield f'\n## {line[2:]}\n'
-      continue
-
-    if line.startswith('/'):
-      yield f'\n### {line[1:]}\n\n'
-      continue
-
-    result = q.eval(line)
-    if result:
-      yield f'    {line} --> {result}\n'
+def get_blocks():
+  for block in re.split(r'\n{2,}', input_file.read_text()):
+    match = re.match(r'(\/+)(.*)', block)
+    if match:
+      level = len(match.group(1))
+      yield Header(level, match.group(2))
     else:
-      yield f'    {line}\n'
+      yield Code(block.splitlines())
 
-with output_file.open('w') as fp:
-  fp.write('# Cheatsheet\n')
-  for line in run_examples(get_lines()):
-    fp.write(line)
+def get_code_chunks(blocks):
+  for block in get_blocks():
+    match block:
+      case Header(level, content):
+        prefix = (4-level) * '#'
+        yield f'p "{prefix} {content}\\n"'
+      case Code(lines):
+        yield '```q'
+        for line in lines:
+          printable_line = line.replace('\\', '\\\\').replace('"', '\\"')
+          yield f'p "q){printable_line}"'
+          if not line.startswith('\\'):
+            yield f'show {line}'
+        yield 'p "```\\n"'
+
+if not build_dir.exists():
+  build_dir.mkdir()
+
+with generated_file.open('w') as fp:
+  fp.write('p:{-1 x; ::}\n')
+  fp.write('p "# Cheatsheet\\n"\n\n')
+  
+  for chunk in get_code_chunks(get_blocks()):    
+    fp.write(f'{chunk}\n')
+  fp.write('exit 0')
+
+result = subprocess.run([q_exe, generated_file], capture_output=True)
+output_file.write_bytes(result.stdout)
