@@ -36,8 +36,13 @@ def get_code_chunks(blocks):
         yield f'p "{prefix} {content}\\n"'
       case Code(lines):
         yield '```q'
+        first_line = True
         for line in lines:
           printable_line = line.replace('\\', '\\\\').replace('"', '\\"')
+          if first_line:
+            first_line = False
+          else:
+            yield 'p ""'
           yield f'p "q){printable_line}"'
           if not line.startswith('\\'):
             yield f'show {line}'
@@ -55,4 +60,4 @@ with generated_file.open('w') as fp:
   fp.write('exit 0')
 
 result = subprocess.run([q_exe, generated_file], capture_output=True)
-output_file.write_bytes(result.stdout)
+output_file.write_bytes(result.stdout.strip() + b'\n')
