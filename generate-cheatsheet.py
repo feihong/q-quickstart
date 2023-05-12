@@ -35,25 +35,28 @@ def get_code_chunks(blocks):
         prefix = (4-level) * '#'
         yield f'p "{prefix} {content}\\n"'
       case Code(lines):
-        yield '```q'
-        first_line = True
+        yield 'p "```q"'
         for line in lines:
           printable_line = line.replace('\\', '\\\\').replace('"', '\\"')
-          if first_line:
-            first_line = False
+          if line.startswith('\\'):
+            yield f'p "{printable_line}"'
+            yield line
           else:
-            yield 'p ""'
-          yield f'p "q){printable_line}"'
-          if not line.startswith('\\'):
-            yield f'show {line}'
+            yield f'pcode["{printable_line}";.Q.s[{line}]]'
         yield 'p "```\\n"'
 
 if not build_dir.exists():
   build_dir.mkdir()
 
+BOILERPLATE = """\
+p:{-1 x;}
+pcode:{[code;val] lines:"\\n" vs -1_val; -1 code," --> ",first lines; ((5+count code)#" ") {-1 x,y;}/: 1_lines;}
+p "# Cheatsheet\\n"
+
+"""
+
 with generated_file.open('w') as fp:
-  fp.write('p:{-1 x; ::}\n')
-  fp.write('p "# Cheatsheet\\n"\n\n')
+  fp.write(BOILERPLATE)
   
   for chunk in get_code_chunks(get_blocks()):    
     fp.write(f'{chunk}\n')
