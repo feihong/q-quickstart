@@ -38,7 +38,7 @@ def get_code_chunks(blocks):
         yield 'p "```q"'
         for line in lines:
           printable_line = line.replace('\\', '\\\\').replace('"', '\\"')
-          if line.startswith('\\'):
+          if line.startswith('\\') or line.startswith("show"):
             yield f'p "{printable_line}"'
             yield line
           else:
