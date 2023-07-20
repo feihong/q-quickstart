@@ -1,4 +1,4 @@
-## How many people are in each age bucket?
+# How many people are in each age bucket?
 
 Example from [Mastering Dyalog APL](https://mastering.dyalog.com/Introduction.html#a-useful-application)
 
@@ -7,7 +7,7 @@ ages:73 16 42 50 2 67 11 81 37 93 100 98 83 32 76 51 37 15 46 88 49 28 100 9 29 
 category:0 25 30 35 45 50 55 65
 ```
 
-Take outer product, get a matrix where each row tells you whether a given person is older than 0 years, older than 25 years, etc.
+Take outer product to get a matrix where each row tells you whether a given person is older than 0 years, older than 25 years, etc. Note that we're only computing the outer product with the first 10 people so we don't have to show a huge matrix.
 
 ```q
 agesSubset:10#ages
@@ -48,7 +48,7 @@ counts
 400 301 275 259 223 197 166 143
 ```
 
-We're not there yet, because we don't care about the total number of people older than 25, we really want to know the number of people older than 25 but younger than 30, i.e. the size of each age bucket. To do that, we can subtract each count by the count that comes after it.
+We're not there yet, because we don't care about the total number of people older than 25, what we really want to know is the number of people older than 25 but younger than 30, i.e. the size of each age bucket. To do that, we can subtract each count by the count that comes after it.
 
 ```q
 counts-(1_counts,0)

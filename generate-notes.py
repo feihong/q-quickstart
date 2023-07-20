@@ -45,8 +45,12 @@ def get_blocks():
       yield Code(lines)
 
 def get_code_chunks(blocks): 
+  first_header = True
   for block in blocks:
     match block:
+      case Header(content) if first_header:
+        yield f'p "# {content}\\n"'
+        first_header = False
       case Header(content):
         yield f'p "## {content}\\n"'
       case Markdown(content):
@@ -80,6 +84,7 @@ with generated_file.open('w') as fp:
   fp.write('exit 0')
 
 result = subprocess.run([q_exe, generated_file], capture_output=True)
+# Get rid of empty code blocks and surrounding newlines
 output = result.stdout.strip().replace(b'\n```\n```\n', b'')
 output_file.write_bytes(output + b'\n')
 
